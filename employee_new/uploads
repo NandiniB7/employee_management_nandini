@@ -1,0 +1,24 @@
+'''import pandas as pd
+import pyodbc
+
+# SQL Server connection
+#conn = pyodbc.connect("DRIVER={SQL Server};SERVER=your_server;DATABASE=your_db;UID=your_user;PWD=your_password")
+cursor = conn.cursor()
+
+# Load Excel File
+file_path = "attendance.xlsx"
+df = pd.read_excel(file_path)
+
+# Insert data into SQL Server
+for index, row in df.iterrows():
+    cursor.execute("""
+        INSERT INTO attendance (employee_id, check_time, check_type)
+        VALUES (?, ?, ?)
+    """, row['Employee_ID'], row['Check_Time'], row['Check_Type'])
+
+conn.commit()
+cursor.close()
+conn.close()
+
+print("Attendance data imported successfully!")
+'''

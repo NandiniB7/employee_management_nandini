@@ -1,0 +1,8 @@
+previous projects should be shown 
+project should be updated status and other manager should be added for manger dashboard
+and dynamic it should be and also leave 
+assigned comma separated should be removed 
+data model and fact table 
+current project for employees
+update employe status
+too much data on manager dashboard

@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Admin Dashboard</h1>
+
+    <div class="row">
+        <!-- Notes Section (Left) -->
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h5>Notes</h5>
+                <textarea id="adminNotes" class="form-control" rows="10" placeholder="Write your notes here..."></textarea>
+                <button class="btn btn-primary mt-2" onclick="saveNotes()">Save Notes</button>
+                <p id="saveMessage" class="text-success mt-2" style="display: none;">Notes saved successfully!</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Metrics (Center) -->
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card text-white bg-primary mb-3" data-count="{{ total_employees }}">
+                        <div class="card-header">Total Employees</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><span class="count-up">0</span></h5>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="col-md-6">
+                    <div class="card text-white bg-success mb-3" data-count="{{ active_employees }}">
+                        <div class="card-header">Active Employees</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><span class="count-up">0</span></h5>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="col-md-6">
+                    <div class="card text-white bg-info mb-3" data-count="{{ total_projects }}">
+                        <div class="card-header">Total Projects</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><span class="count-up">0</span></h5>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="col-md-6">
+                    <div class="card text-white bg-warning mb-3" data-count="{{ available_projects }}">
+                        <div class="card-header">Available Projects</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><span class="count-up">0</span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- News Section (Right) -->
+        <div class="col-md-3">
+            <div class="card p-3 news-container">
+                <h5>Latest News</h5>
+                <div class="news-wrapper">
+                    <ul class="news-list">
+                        {% for item in news %}
+                        <li class="news-item">
+                            <h6>{{ item.date }}</h6>
+                            <p>{{ item.content }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Notification Bell Icon -->
+        <div class="dropdown">
+            <button class="btn btn-light position-relative" id="notifBell" data-bs-toggle="dropdown" aria-expanded="false">
+                🔔 Notifications <span class="badge bg-danger" id="notifCount">0</span>
+            </button>
+            <ul class="dropdown-menu" id="notifList">
+                <!-- Notifications will be loaded here dynamically -->
+            </ul>
+        </div>
+
+        <script>
+            $(document).ready(function(){
+                function adjustHeight() {
+                    var itemHeight = $(".news-item").outerHeight(true);
+                    var visibleItems = 3;
+                    $(".news-wrapper").css("height", itemHeight * visibleItems);
+                }
+                adjustHeight();
+            });
+        </script>
+
+        <!-- Four Boxes Script -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const cards = document.querySelectorAll(".card[data-count]");
+        
+                cards.forEach(card => {
+                    const target = +card.getAttribute("data-count");
+                    const counter = card.querySelector(".count-up");
+                    let count = 0;
+                    const speed = 50;
+        
+                    const updateCount = () => {
+                        const increment = Math.ceil(target / 40);
+                        if (count < target) {
+                            count += increment;
+                            if (count > target) count = target;
+                            counter.innerText = count;
+                            setTimeout(updateCount, speed);
+                        } else {
+                            counter.innerText = target;
+                        }
+                    };
+        
+                    updateCount();
+                });
+            });
+        </script>
+        
+        
+        
+        <!-- News Auto-Scroll Script -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                function adjustHeight() {
+                    var itemHeight = $(".news-item").outerHeight(true);
+                    var visibleItems = 3;
+                    $(".news-wrapper").css("height", itemHeight * visibleItems);
+                }
+
+                adjustHeight();
+
+                function moveTop() {
+                    var tickerHeight = $(".news-item").outerHeight(true);
+                    $(".news-list").animate({
+                        top: -tickerHeight
+                    }, 600, function(){
+                        $(".news-item:first").appendTo(".news-list");
+                        $(".news-list").css("top", "0");
+                    });
+                }
+
+                setInterval(moveTop, 3000);
+            });
+
+            function saveNotes() {
+                var notes = document.getElementById("adminNotes").value;
+                if (notes.trim() !== "") {
+                    localStorage.setItem("adminNotes", notes);
+                    document.getElementById("saveMessage").style.display = "block";
+                    setTimeout(() => {
+                        document.getElementById("saveMessage").style.display = "none";
+                    }, 3000);
+                }
+            }
+
+            // Load saved notes on page load
+            window.onload = function() {
+                var savedNotes = localStorage.getItem("adminNotes");
+                if (savedNotes) {
+                    document.getElementById("adminNotes").value = savedNotes;
+                }
+            }
+        </script>
+
+        <!-- CSS for Dynamic Height and Smooth Scrolling -->
+        <style>
+            .news-wrapper {
+                overflow: hidden;
+                position: relative;
+            }
+
+            .news-list {
+                position: absolute;
+                width: 100%;
+            }
+
+            .news-item {
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+                background-color: #f8f9fa;
+            }
+
+            .news-item h6 {
+                margin: 0;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .news-item p {
+                margin: 0;
+                font-size: 12px;
+                color: #555;
+                white-space: normal;
+            }
+        </style>
+
+
+{% endblock %}
+
+

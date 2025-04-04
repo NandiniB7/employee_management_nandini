@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Notifications</h2>
+    <button class="btn btn-primary" onclick="sendNotification()">Send Attendance Notifications</button>
+    {#
+    <script>
+        function sendNotification() {
+            fetch('/send_attendance_notifications')
+                .then(response => response.text())
+                .then(data => alert(data));
+        }
+    </script>#}
+
+<script>
+    $(document).ready(function () {
+        // Fetch notifications
+        fetch('/notifications')
+            .then(response => response.json())
+            .then(data => {
+                const notifList = $('#notifList');
+                const notifCount = $('#notifCount');
+                notifList.empty();
+                notifCount.text(data.length);
+
+                if (data.length === 0) {
+                    notifList.append('<li class="dropdown-item">No new notifications</li>');
+                } else {
+                    data.forEach(notif => {
+                        const notifItem = $('<li class="dropdown-item"></li>').text(notif.message);
+                        notifItem.click(function () {
+                            fetch(`/mark_read/${notif.id}`, { method: 'POST' })
+                                .then(() => location.reload());
+                        });
+                        notifList.append(notifItem);
+                    });
+                }
+            });
+    });
+</script>
+
+</div>
+{% endblock %}

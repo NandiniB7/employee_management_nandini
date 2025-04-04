@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Projects</h2>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Project Name</th>
+            <th>Client</th>
+            <th>Cost</th>
+            <th>Profit</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+            <th>Assigned To</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for project in projects %}
+        <tr>
+            <td>{{ project.project_name }}</td>
+            <td>{{ project.client_name }}</td>
+            <td>{{ project.project_cost }}</td>
+            <td>{{ project.profit_earned }}</td>
+            <td>{{ project.start_date }}</td>
+            <td>{{ project.end_date }}</td>
+            <td>{{ project.status }}</td>
+            <td>{{ project.assigned_to }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
